@@ -6,22 +6,22 @@ using System.Reflection;
 
 namespace Modbus.ModbusFunctions
 {
-    /// <summary>
-    /// Class containing logic for parsing and packing modbus read coil functions/requests.
-    /// </summary>
-    public class ReadCoilsFunction : ModbusFunction
+    /// <summary>
+    /// Class containing logic for parsing and packing modbus read coil functions/requests.
+    /// </summary>
+    public class ReadCoilsFunction : ModbusFunction
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ReadCoilsFunction"/> class.
-        /// </summary>
-        /// <param name="commandParameters">The modbus command parameters.</param>
-		public ReadCoilsFunction(ModbusCommandParameters commandParameters) : base(commandParameters)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ReadCoilsFunction"/> class.
+        /// </summary>
+        /// <param name="commandParameters">The modbus command parameters.</param>
+        public ReadCoilsFunction(ModbusCommandParameters commandParameters) : base(commandParameters)
         {
             CheckArguments(MethodBase.GetCurrentMethod(), typeof(ModbusReadCommandParameters));
         }
 
-        /// <inheritdoc/>
-        public override byte[] PackRequest()
+        /// <inheritdoc/>
+        public override byte[] PackRequest()
         {
             ModbusReadCommandParameters parameters = CommandParameters as ModbusReadCommandParameters;
             byte[] requestBytes = new byte[12];
@@ -42,11 +42,14 @@ namespace Modbus.ModbusFunctions
             return requestBytes;
         }
 
-        /// <inheritdoc />
-        public override Dictionary<Tuple<PointType, ushort>, ushort> ParseResponse(byte[] response)
+        /// <inheritdoc />
+        public override Dictionary<Tuple<PointType, ushort>, ushort> ParseResponse(byte[] response)
         {
             ModbusReadCommandParameters parameters = CommandParameters as ModbusReadCommandParameters;
             Dictionary<Tuple<PointType, ushort>, ushort> coilStates = new Dictionary<Tuple<PointType, ushort>, ushort>();
+
+            if (response == null || response.Length < 9)
+                throw new ArgumentException("Invalid response length.");
 
             if (response[7] == parameters.FunctionCode + 0x80)
             {
