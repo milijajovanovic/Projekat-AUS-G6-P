@@ -1,0 +1,8 @@
+STA 23
+TCP 33424
+
+
+DO_REG  4 5400  0  0      1     0  DO  @DigOut 2
+DI_REG  0 0     0  0      1     0  DI  @DigIn  2
+IN_REG  1 5100  0  0   4095     0  AI  @AnaIn  1
+HR_INT  1 2400  0  0   4095     0  AO  @AnaOut  1
